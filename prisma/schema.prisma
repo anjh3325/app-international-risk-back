@@ -6,6 +6,25 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  password String
+  createAt DateTime @default(now())
+
+  comments Comment[]
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  country String
+
+  User   User   @relation(fields: [writer], references: [name])
+  writer String
+
+  content String
 }
