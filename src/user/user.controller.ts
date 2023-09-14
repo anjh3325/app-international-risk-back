@@ -1,18 +1,20 @@
 import { Controller } from '@nestjs/common';
 import {
   Body,
+  Delete,
+  Param,
   Post,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common/decorators';
-import { ValidationPipe } from '@nestjs/common/pipes';
+import { ValidationPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { ClassSerializerInterceptor } from '@nestjs/common/serializer';
 import { User } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDTO } from './dto/create-user.dto';
-import { UserService } from './user.service';
-import { UserDTO } from './dto/user.dto';
 import { SignInUserDTO } from './dto/signIn-user.dto';
+import { UserDTO } from './dto/user.dto';
+import { UserService } from './user.service';
 
 @Controller('user')
 @UsePipes(ValidationPipe)
@@ -32,5 +34,14 @@ export class UserController {
   async signIn(@Body() signInUserDTO: SignInUserDTO): Promise<User> {
     const user = await this.userService.signIn(signInUserDTO);
     return plainToInstance(UserDTO, user);
+  }
+
+  //회원탈퇴
+  @Delete('/:id/:password')
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('password') password: string,
+  ) {
+    await this.userService.delete(id, password);
   }
 }

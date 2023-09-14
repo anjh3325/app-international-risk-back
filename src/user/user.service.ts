@@ -1,8 +1,13 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { User } from '@prisma/client';
 import { SignInUserDTO } from './dto/signIn-user.dto';
+import { DeleteUserDTO } from './dto/delete-user.dto';
 
 @Injectable()
 export class UserService {
@@ -30,5 +35,16 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async delete(id: number, password: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: Number(id) },
+    });
+    if (!user) {
+      throw new BadRequestException('이미 탈퇴한 유저입니다.');
+    } else if (user.password === password) {
+      await this.prismaService.user.delete({ where: { id: Number(id) } });
+    }
   }
 }
