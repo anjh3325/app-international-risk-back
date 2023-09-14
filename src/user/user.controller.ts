@@ -15,6 +15,7 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { SignInUserDTO } from './dto/signIn-user.dto';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
+import { DeleteUserDTO } from './dto/delete-user.dto';
 
 @Controller('user')
 @UsePipes(ValidationPipe)
@@ -37,11 +38,8 @@ export class UserController {
   }
 
   //회원탈퇴
-  @Delete('/:id/:password')
-  async delete(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('password') password: string,
-  ) {
-    await this.userService.delete(id, password);
+  @Delete()
+  async delete(@Body() deleteUserDTO: DeleteUserDTO) {
+    await this.userService.delete(deleteUserDTO);
   }
 }

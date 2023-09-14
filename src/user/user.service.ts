@@ -37,7 +37,9 @@ export class UserService {
     return user;
   }
 
-  async delete(id: number, password: string) {
+  async delete(deleteUserDTO) {
+    const { id, name, password } = deleteUserDTO;
+
     const user = await this.prismaService.user.findUnique({
       where: { id: Number(id) },
     });
