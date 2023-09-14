@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Continent } from './model/continent.model';
+import { CountryData } from './model/country-data.model';
 
 @Injectable()
 export class ApiRequestService {
@@ -28,7 +29,7 @@ export class ApiRequestService {
     return data;
   }
 
-  async getCountryByLvl(lvl): Promise<any> {
+  async getCountryByLvl(lvl: number): Promise<Continent> {
     const countries = await this.getAll();
     let continent: Continent = {
       africa: [],
@@ -54,5 +55,17 @@ export class ApiRequestService {
       }
     }
     return continent;
+  }
+
+  async findCountry(isoCode: String): Promise<any> {
+    const countries = await this.getAll();
+
+    for (let country of countries.data) {
+      if (country.country_iso_alp2 == isoCode) {
+        return country;
+      } else {
+        return '없음';
+      }
+    }
   }
 }
