@@ -1,4 +1,4 @@
-import { CountryData } from './country-data.data';
+import { CountryData } from './country-data.model';
 
 export class CountryResponseResult {
   currentCount: number;
