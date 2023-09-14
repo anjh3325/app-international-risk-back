@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { CountryService } from './country.service';
 import { Continent } from './model/continent.model';
+import { CountryData } from './model/country-data.model';
 
 @Controller('country')
 export class CountryController {
@@ -18,7 +19,7 @@ export class CountryController {
   }
 
   @Get('/:isoCode')
-  async findCountry(@Param('isoCode') isoCode: string): Promise<any> {
+  async findCountry(@Param('isoCode') isoCode: string): Promise<CountryData> {
     return await this.countryService.findCountry(isoCode);
   }
 }

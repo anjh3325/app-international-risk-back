@@ -1,7 +1,7 @@
 import { CountryDetail } from './country_detail.model';
 
 export class CountryData {
-  alarm_lvl: number;
+  alarmLvl: number;
   continent_cd: string;
   continent_eng_nm: string;
   continent_nm: string;

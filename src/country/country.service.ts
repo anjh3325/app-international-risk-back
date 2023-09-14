@@ -1,10 +1,9 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config/dist';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Continent } from './model/continent.model';
-import { ConfigService } from '@nestjs/config/dist';
 import { CountryData } from './model/country-data.model';
-import { CountryDetail } from './model/country_detail.model';
 
 @Injectable()
 export class CountryService {
@@ -64,7 +63,7 @@ export class CountryService {
     return continent;
   }
 
-  async findCountry(isoCode: String): Promise<any> {
+  async findCountry(isoCode: String): Promise<CountryData> {
     const countries = await this.getAll();
 
     let target: CountryData;
