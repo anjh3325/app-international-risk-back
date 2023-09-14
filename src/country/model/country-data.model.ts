@@ -1,3 +1,5 @@
+import { CountryDetail } from './country_detail.model';
+
 export class CountryData {
   alarm_lvl: number;
   continent_cd: string;
@@ -11,4 +13,6 @@ export class CountryData {
   map_download_url: string;
   region_ty: string;
   remark: string;
+
+  country_detail: CountryDetail;
 }
