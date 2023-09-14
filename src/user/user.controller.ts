@@ -21,14 +21,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // 회원가입
-  @Post()
+  @Post('/create')
   async create(@Body() createUserDTO: CreateUserDTO): Promise<User> {
     const created = await this.userService.create(createUserDTO);
     return plainToInstance(UserDTO, created);
   }
 
   // 로그인
-  @Post()
+  @Post('/signIn')
   async signIn(@Body() signInUserDTO: SignInUserDTO): Promise<User> {
     const user = await this.userService.signIn(signInUserDTO);
     return plainToInstance(UserDTO, user);

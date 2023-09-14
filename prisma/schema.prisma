@@ -27,4 +27,6 @@ model Comment {
   writer String
 
   content String
+
+  createAt DateTime @default(now())
 }
