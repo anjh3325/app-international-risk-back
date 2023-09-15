@@ -8,10 +8,14 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { User } from '@prisma/client';
 import { SignInUserDTO } from './dto/signIn-user.dto';
 import { DeleteUserDTO } from './dto/delete-user.dto';
+import { CommentService } from 'src/comment/comment.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private commentService: CommentService,
+  ) {}
 
   async findUser(name: string): Promise<User> {
     return await this.prismaService.user.findUnique({
@@ -30,7 +34,7 @@ export class UserService {
   async signIn(signInUserDTO: SignInUserDTO): Promise<User> {
     const { name, password } = signInUserDTO;
     const user = await this.findUser(name);
-    if (!user && user.password !== password) {
+    if (!user || user.password !== password) {
       throw new ConflictException('아이디 또는 비밀번호가 잘못되었습니다.');
     }
 
@@ -45,8 +49,16 @@ export class UserService {
     });
     if (!user) {
       throw new BadRequestException('이미 탈퇴한 유저입니다.');
-    } else if (user.password === password) {
-      await this.prismaService.user.delete({ where: { id: Number(id) } });
+    }
+    if (user.password === password) {
+      try {
+        await this.prismaService.$transaction(async (tx) => {
+          await this.commentService.deleteAllbyWriter(name);
+          await this.prismaService.user.delete({ where: { id: Number(id) } });
+        });
+      } catch (err) {
+        console.log('transaction Error= ', err);
+      }
     }
   }
 }

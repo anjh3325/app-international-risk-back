@@ -20,13 +20,12 @@ model User {
 }
 
 model Comment {
-  id      Int    @id @default(autoincrement())
-  country String
-
-  User   User   @relation(fields: [writer], references: [name])
-  writer String
-
-  content String
-
-  createAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  continent String
+  country   String
+  User      User     @relation(fields: [writer], references: [name])
+  writer    String
+  password  String
+  content   String
+  createAt  DateTime @default(now())
 }

@@ -6,20 +6,31 @@ import {
   Post,
   Delete,
   Param,
+  Patch,
+  Get,
 } from '@nestjs/common/decorators';
 import { ParseIntPipe, ValidationPipe } from '@nestjs/common/pipes';
 import { ClassSerializerInterceptor } from '@nestjs/common/serializer';
 import { CommentService } from './comment.service';
-import { CreateCommentDTO } from './DTO/create-comment.dto';
+
 import { Comment } from '@prisma/client';
 import { CommentDTO } from './DTO/comment.dto';
 import { plainToInstance } from 'class-transformer';
+import { CreateCommentDTO } from './DTO/create-comment.dto';
+import { ModifyCommentDTO } from './DTO/modify-comment.dto';
+import { DeleteCommentDTO } from './DTO/delete-comment.dto';
 
 @Controller('comment')
 @UsePipes(ValidationPipe)
 @UseInterceptors(ClassSerializerInterceptor)
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
+
+  // 전체 코멘트 불러오기
+  @Get()
+  async getAll(): Promise<Comment[]> {
+    return await this.commentService.getAll();
+  }
 
   // 코멘트 작성
   @Post()
@@ -30,8 +41,18 @@ export class CommentController {
   }
 
   // 코멘트 삭제
-  @Delete('/:id')
-  async deleteComment(@Param('id', ParseIntPipe) id: number) {
-    await this.commentService.delete(id);
+  @Delete()
+  async deleteComment(@Body() deleteCommentDTO: DeleteCommentDTO) {
+    await this.commentService.delete(deleteCommentDTO);
+  }
+
+  // 코멘트 수정
+  @Patch()
+  async modifyComment(
+    @Body() modifyCommentDTO: ModifyCommentDTO,
+  ): Promise<Comment> {
+    const modify = await this.commentService.modify(modifyCommentDTO);
+
+    return plainToInstance(CommentDTO, modify);
   }
 }
